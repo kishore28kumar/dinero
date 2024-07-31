@@ -11,6 +11,34 @@ Dinero is a personal finance management tool.
 # Resources
 - [Wireframe Tool](https://www.tldraw.com/)
 - [Wireframe](https://www.tldraw.com/r/zFw4AI91pF3ai9qmW_UQc?v=-1285,-886,6678,3914&p=page)
+- [UI Components](https://ui.shadcn.com/docs/components/accordion)
+- [CSS Styles](https://tailwindcss.com/docs/container)
+- [React](https://react.dev/learn)
+- [React Router](https://reactrouter.com/en/main/start/overview)
+- [Icons](https://lucide.dev/icons/)
+
+# Local Setup
+
+1) Install the Firebase CLI via npm by running the following command:
+    ```
+    npm install -g firebase-tools
+    ```
+2) Install npm dependencies by running the following command:
+    ```
+    npm install --force
+    ```
+3) Check if Java is installed or intall JDK 11 or higher
+    ```
+    java -version
+    ```
+4) Start emulator using the following command
+    ```
+    npm run emulators:start
+    ```
+5) Start application using the following command
+    ```
+    npm run dev
+    ```
 
 # React + TypeScript + Vite
 
