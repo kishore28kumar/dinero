@@ -1,18 +1,34 @@
 import { QueryDocumentSnapshot, serverTimestamp } from "firebase/firestore";
 import { PaymentInstrument } from "../../models/PaymentInstrument.model";
+import { BankAccount } from "../../models/BankAccount.model";
 
 // Firestore data converter
 export const PaymentInstrumentConverter = {
     toFirestore: (paymentInstrument: PaymentInstrument) => {
-        return {
-            instrumentName: paymentInstrument.instrumentName,
-            instrumentType: paymentInstrument.instrumentType,
-            createdBy: paymentInstrument.createdBy,
-            createdDate: paymentInstrument.createdDate,
-            updatedBy: paymentInstrument.updatedBy,
-            updatedDate: serverTimestamp(),
-            // bankAccount: paymentInstrument.bankAccount
-        };
+        if (paymentInstrument.instrumentType === "Bank Account") {
+            return {
+                instrumentName: paymentInstrument.instrumentName,
+                instrumentType: paymentInstrument.instrumentType,
+                createdBy: paymentInstrument.createdBy,
+                createdDate: paymentInstrument.createdDate,
+                updatedBy: paymentInstrument.updatedBy,
+                updatedDate: serverTimestamp(),
+                bankAccount: {
+                    bankName: paymentInstrument.bankAccount.bankName,
+                    accountNumber: paymentInstrument.bankAccount.accountNumber
+                }
+            };
+        } else {
+            return {
+                instrumentName: paymentInstrument.instrumentName,
+                instrumentType: paymentInstrument.instrumentType,
+                createdBy: paymentInstrument.createdBy,
+                createdDate: paymentInstrument.createdDate,
+                updatedBy: paymentInstrument.updatedBy,
+                updatedDate: serverTimestamp(),
+                creditCard: {}
+            };
+        }
     },
     fromFirestore: (snapshot: QueryDocumentSnapshot, options: any) => {
         const data = snapshot.data(options);
@@ -24,6 +40,12 @@ export const PaymentInstrumentConverter = {
         paymentInstrument.createdDate = data.createdDate;
         paymentInstrument.updatedBy = data.updatedBy;
         paymentInstrument.updatedDate = data.updatedDate;
+        if (paymentInstrument.instrumentType === "Bank Account") {
+            let bankAccount = new BankAccount();
+            bankAccount.bankName = data.bankAccount.bankName;
+            bankAccount.accountNumber = data.bankAccount.accountNumber;
+            paymentInstrument.bankAccount = bankAccount;
+        }
         return paymentInstrument;
     }
 };

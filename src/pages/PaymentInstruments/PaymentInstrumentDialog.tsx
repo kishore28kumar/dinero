@@ -37,6 +37,7 @@ import { PaymentInstrumentService } from "../../services/PaymentInstrumentServic
 import { PaymentInstrumentFormSchema } from "./PaymentInstrumentFormSchema";
 import { toast } from "sonner";
 import { BankAccount } from "../../models/BankAccount.model";
+import { FirestoreError } from "firebase/firestore";
 
 export function PaymentInstrumentDialog({
   open,
@@ -70,8 +71,9 @@ export function PaymentInstrumentDialog({
         onClose();
         onSave(paymentInstrument);
       })
-      .catch((error) => {
-        toast.error("Unable to create the Payment Instrument.");
+      .catch((error: FirestoreError) => {
+        toast.error("Unable to create the Payment Instrument");
+        console.error(error);
         setIsLoading(false);
       });
   }

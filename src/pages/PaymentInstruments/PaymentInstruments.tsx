@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { FirestoreError } from "firebase/firestore";
 
 export function PaymentInstruments() {
   // Hooks
@@ -46,8 +47,9 @@ export function PaymentInstruments() {
         setData(paymentInstruments);
         setIsLoading(false);
       })
-      .catch((error) => {
+      .catch((error: FirestoreError) => {
         toast.error("Unable to fetch the Payment Instruments.");
+        console.error(error);
         setIsLoading(false);
       });
   }
@@ -83,7 +85,8 @@ export function PaymentInstruments() {
           />
         </ErrorBoundary>
       </div>
-      <div className="py-5 grid gap-5">
+      {/* <div className="py-5 grid gap-5"> */}
+        <div className="py-5 flex gap-5">
         {isLoading ? (
           <span>Loading...</span>
         ) : (
@@ -101,8 +104,9 @@ export function PaymentInstruments() {
                     <CardDescription></CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p>Bank Name</p>
-                    <p>Account Number</p>
+                    <p>{paymentInstrument.bankAccount.bankName}</p>
+                    <p>{paymentInstrument.bankAccount.accountNumber}</p>
+                    <p className="text-4xl">X,XX,XXX,XXX.XX</p>
                   </CardContent>
                   <CardFooter>
                     <Button>View Balance</Button>
