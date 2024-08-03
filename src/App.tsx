@@ -42,7 +42,7 @@ function App() {
     connectAuthEmulator(authInstance, "http://127.0.0.1:9001/", {
       disableWarnings: true,
     });
-    connectFirestoreEmulator(firestoreInstance, "localhost", 9000);
+    connectFirestoreEmulator(firestoreInstance, "localhost", 9003);
   }
 
   return (
