@@ -10,12 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CircleUser } from "lucide-react";
 import { MobileSideNav } from "./MobileSideNav";
 import { clearIndexedDbPersistence, terminate } from "firebase/firestore";
+import { useOnlineStatus } from "@hooks";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function AppTopBar() {
   let navigate = useNavigate();
+  const isOnline = useOnlineStatus();
   const authInstance = getAuth(useFirebaseApp());
   const db = useFirestore();
   const { data: user, status } = useUser();
@@ -41,8 +43,24 @@ export function AppTopBar() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" size="icon" className="rounded-full">
-            <CircleUser className="h-5 w-5" />
             <span className="sr-only">Toggle user menu</span>
+            <div className="relative">
+              <Avatar>
+                <AvatarImage alt={user?.displayName!} />
+                <AvatarFallback>
+                  {" "}
+                  {user
+                    ?.displayName!.split(" ")
+                    .map((chunk) => chunk[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+              {isOnline ? (
+                <span className="top-0 left-7 absolute  w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
+              ) : (
+                <span className="top-0 left-7 absolute  w-3.5 h-3.5 bg-red-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
+              )}
+            </div>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

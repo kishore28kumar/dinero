@@ -1,0 +1,10 @@
+export { Home } from "@pages/Home";
+export { SignIn } from "@pages/SignIn";
+export { Dashboard } from "@pages/Dashboard";
+export { UserHome } from "@pages/UserHome";
+export { Profile } from "@pages/Profile";
+export { Transactions } from "@pages/Transactions/Transactions";
+export { PaymentInstruments } from "@pages/PaymentInstruments/PaymentInstruments";
+export { Categories } from "@pages/Categories/Categories";
+export { NotFoundPage } from "@pages/NotFoundPage";
+export { UserNotApprovedPage } from "@pages/UserNotApprovedPage";

@@ -2,11 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { TransactionDialog } from "./TransactionDialog";
-import { DataTable } from "../../components/DataTable";
+import { DataTable } from "@/components/DataTable";
 import { columns } from "./columns";
-import { Transaction } from "../../models/Transaction.model";
+import { Transaction } from "@models/Transaction.model";
 import { useFirestore, useUser } from "reactfire";
-import { TransactionService } from "../../services/TransactionService";
+import { TransactionService } from "@services/TransactionService";
 import { toast } from "sonner";
 
 export function Transactions() {

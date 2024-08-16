@@ -17,5 +17,9 @@ service cloud.firestore {
     match /paymentInstrument/{paymentInstrumentId} {
       allow create: if request.auth != null && request.auth.token.email_verified && request.auth.token.approved && request.auth.uid == request.resource.data.createdBy;
     }
+
+    match /category/{categoryId} {
+      allow read: if request.auth != null && request.auth.token.email_verified && request.auth.token.approved;
+    }
   }
 }

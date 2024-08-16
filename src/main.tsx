@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { FirebaseAppProvider } from "reactfire";
-import { firebaseConfig } from "./firebase-config.tsx";
+import { firebaseConfig } from "./FirebaseConfig";
 import { Toaster } from "@/components/ui/sonner";
 
 const root = ReactDOM.createRoot(
@@ -16,7 +16,7 @@ root.render(
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
       <BrowserRouter>
         <App />
-        <Toaster position="bottom-center"/>
+        <Toaster position="bottom-center" />
       </BrowserRouter>
     </FirebaseAppProvider>
   </React.StrictMode>

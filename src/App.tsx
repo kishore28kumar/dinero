@@ -1,19 +1,14 @@
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import "./App.css";
-import { Home } from "./pages/Home";
 import { ThemeProvider } from "./components/ThemeProvider";
-import { SignIn } from "./pages/SignIn";
 import {
+  AppCheckProvider,
   AuthProvider,
   FirestoreProvider,
   StorageProvider,
   useFirebaseApp,
 } from "reactfire";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { Dashboard } from "./pages/Dashboard";
-import { UserHome } from "./pages/UserHome";
-import { Profile } from "./pages/Profile";
-import { Transactions } from "./pages/Transactions/Transactions";
 import {
   CACHE_SIZE_UNLIMITED,
   connectFirestoreEmulator,
@@ -23,14 +18,25 @@ import {
   persistentSingleTabManager,
 } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
-import { PaymentInstruments } from "./pages/PaymentInstruments/PaymentInstruments";
+import {
+  AppCheck,
+  ReCaptchaV3Provider,
+  initializeAppCheck,
+} from "firebase/app-check";
+import AppRoutes from "./AppRoutes";
 
 function App() {
   const app = useFirebaseApp();
+  const appCheckInstance: AppCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(
+      "6LdxSyQqAAAAAH-8Rwe7fILh7IYxDdiu5CfAotZF"
+    ),
+    isTokenAutoRefreshEnabled: true,
+  });
   const firestoreInstance: Firestore = initializeFirestore(app, {
     localCache: persistentLocalCache({
       tabManager: persistentSingleTabManager({ forceOwnership: true }),
-      cacheSizeBytes: CACHE_SIZE_UNLIMITED
+      cacheSizeBytes: CACHE_SIZE_UNLIMITED,
     }),
   });
   const storageInstance = getStorage(app);
@@ -47,27 +53,16 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <FirestoreProvider sdk={firestoreInstance}>
-        <StorageProvider sdk={storageInstance}>
-          <AuthProvider sdk={authInstance}>
-            <Outlet />
-            <Routes>
-              <Route path="/" element={<Home />}></Route>
-              <Route path="/sign-in" element={<SignIn />}></Route>
-              <Route path="/user-home" element={<UserHome />}>
-                <Route path="dashboard" element={<Dashboard />}></Route>
-                <Route path="transactions" element={<Transactions />}></Route>
-                <Route path="profile" element={<Profile />}></Route>
-                <Route
-                  path="payment-instruments"
-                  element={<PaymentInstruments />}
-                ></Route>
-              </Route>
-              <Route path="*" element={<Home />}></Route>
-            </Routes>
-          </AuthProvider>
-        </StorageProvider>
-      </FirestoreProvider>
+      <AppCheckProvider sdk={appCheckInstance}>
+        <FirestoreProvider sdk={firestoreInstance}>
+          <StorageProvider sdk={storageInstance}>
+            <AuthProvider sdk={authInstance}>
+              <Outlet />
+              <AppRoutes />
+            </AuthProvider>
+          </StorageProvider>
+        </FirestoreProvider>
+      </AppCheckProvider>
     </ThemeProvider>
   );
 }

@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import StyledFirebaseAuth from "../components/StyledFirebaseAuth";
+import { IndianRupee } from "lucide-react";
 
 export function SignIn() {
   let navigate = useNavigate();
@@ -28,7 +29,7 @@ export function SignIn() {
     },
     // We will display Google and Email as auth providers.
     signInOptions: [
-      EmailAuthProvider.PROVIDER_ID,
+      // EmailAuthProvider.PROVIDER_ID,
       GoogleAuthProvider.PROVIDER_ID,
     ],
   };
@@ -37,7 +38,10 @@ export function SignIn() {
     <>
       <main className="grid min-h-screen place-items-center bg-black items-start pt-72">
         <div className="text-center min-w-full">
-          <h1 className="text-5xl font-bold text-white pb-4">Dinero</h1>
+          <div className="flex flex-row grow justify-center items-baseline pb-4">
+            <IndianRupee className="h-11 w-11" />
+            <h1 className="text-6xl font-bold text-white">Dinero</h1>
+          </div>
           <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={authInstance} />
         </div>
       </main>

@@ -16,6 +16,10 @@ Dinero is a personal finance management tool.
 - [React](https://react.dev/learn)
 - [React Router](https://reactrouter.com/en/main/start/overview)
 - [Icons](https://lucide.dev/icons/)
+- [Shadcn Admin](https://github.com/satnaing/shadcn-admin)
+- [daisyUI](https://daisyui.com/)
+- [awesome-shadcn-ui](https://github.com/birobirobiro/awesome-shadcn-ui)
+- [Flowbite](https://flowbite.com/docs/getting-started/react/)
 
 # Local Setup
 
@@ -70,3 +74,28 @@ export default {
 - Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+
+# Types of components,
+- UI Component
+- Feature Component
+- Page Component
+- Compound Component
+- Higher Order Component (HOC)
+- Wrapper Component
+- Container/Presentational Component
+
+# cURL Commands,
+
+## Approve New User
+```
+curl --request GET \
+  --url 'http://127.0.0.1:5001/dinero-62808/us-central1/user/approve?uid=Rl2EhgWopS2K9cHjdJ3SJP1PxBtK' \
+  --header 'Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJuYW1lIjoiQ2hpY2tlbiBHcmFzcyIsInBpY3R1cmUiOiIiLCJhcHByb3ZlZCI6dHJ1ZSwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJjaGlja2VuLmdyYXNzLjMyN0BleGFtcGxlLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdXRoX3RpbWUiOjE3MjMzODUxMjIsInVzZXJfaWQiOiJSbDJFaGdXb3BTMks5Y0hqZEozU0pQMVB4QnRLIiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJjaGlja2VuLmdyYXNzLjMyN0BleGFtcGxlLmNvbSJdLCJnb29nbGUuY29tIjpbIjI4NzE3NDMyMjA2NzI0NTkwOTY1MjEwNjIzNzE4NDc0ODM0MDY5NTciXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn0sImlhdCI6MTcyMzM4NTEyNywiZXhwIjoxNzIzMzg4NzI3LCJhdWQiOiJkaW5lcm8tNjI4MDgiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZGluZXJvLTYyODA4Iiwic3ViIjoiUmwyRWhnV29wUzJLOWNIamRKM1NKUDFQeEJ0SyJ9.'
+```
+
+## List Users
+```
+curl --request GET \
+  --url http://127.0.0.1:5001/dinero-62808/us-central1/user \
+  --header 'Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJuYW1lIjoiQ2hpY2tlbiBHcmFzcyIsInBpY3R1cmUiOiIiLCJhcHByb3ZlZCI6dHJ1ZSwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJjaGlja2VuLmdyYXNzLjMyN0BleGFtcGxlLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdXRoX3RpbWUiOjE3MjMzODUxMjIsInVzZXJfaWQiOiJSbDJFaGdXb3BTMks5Y0hqZEozU0pQMVB4QnRLIiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJjaGlja2VuLmdyYXNzLjMyN0BleGFtcGxlLmNvbSJdLCJnb29nbGUuY29tIjpbIjI4NzE3NDMyMjA2NzI0NTkwOTY1MjEwNjIzNzE4NDc0ODM0MDY5NTciXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn0sImlhdCI6MTcyMzM4NTEyNywiZXhwIjoxNzIzMzg4NzI3LCJhdWQiOiJkaW5lcm8tNjI4MDgiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZGluZXJvLTYyODA4Iiwic3ViIjoiUmwyRWhnV29wUzJLOWNIamRKM1NKUDFQeEJ0SyJ9.'
+```
