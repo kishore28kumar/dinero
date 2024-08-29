@@ -1,9 +1,13 @@
 import { useApproved } from "@hooks";
-import { UserNotApprovedPage } from "@pages";
+import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useSigninCheck } from "reactfire";
 
-export function RequireAuth({ children }) {
+type Props = {
+  children: ReactNode;
+};
+
+export function RequireAuth({ children }: Props) {
   const { status, data: signInCheckResult } = useSigninCheck();
   const { approved, isLoading } = useApproved();
 
@@ -15,7 +19,7 @@ export function RequireAuth({ children }) {
     if (approved) {
       return children;
     } else if (!approved) {
-      return <UserNotApprovedPage />;
+      return <Navigate to="/sign-in/approval"></Navigate>;
     }
   } else {
     return <Navigate to="/"></Navigate>;

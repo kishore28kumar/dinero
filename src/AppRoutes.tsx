@@ -9,6 +9,9 @@ import {
   PaymentInstruments,
   Categories,
   NotFoundPage,
+  UsersPage,
+  UserNotApprovedPage,
+  AccessDeniedPage,
 } from "@pages";
 
 function AppRoutes() {
@@ -16,6 +19,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />}></Route>
       <Route path="/sign-in" element={<SignIn />}></Route>
+      <Route path="/sign-in/approval" element={<UserNotApprovedPage />}></Route>
+      <Route path="/access-denied" element={<AccessDeniedPage />}></Route>
       <Route path="/user-home" element={<UserHome />}>
         <Route path="dashboard" element={<Dashboard />}></Route>
         <Route path="transactions" element={<Transactions />}></Route>
@@ -25,6 +30,7 @@ function AppRoutes() {
           element={<PaymentInstruments />}
         ></Route>
         <Route path="categories" element={<Categories />}></Route>
+        <Route path="users" element={<UsersPage />}></Route>
       </Route>
       <Route path="*" element={<NotFoundPage />}></Route>
     </Routes>

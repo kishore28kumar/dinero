@@ -1,3 +1,4 @@
+import { Category } from "@models/Category.model";
 import { z } from "zod";
 
 export const TransactionFormSchema = z.object({
@@ -26,13 +27,18 @@ export const TransactionFormSchema = z.object({
   accountType: z.string({
     required_error: "Account Type is required.",
   }),
-  category: z
-    .string({
+  category: z.object({
+    categoryId: z.string({
       required_error: "Category is required.",
-    })
-    .min(1, {
-      message: "Category is required.",
     }),
+    categoryName: z
+      .string({
+        required_error: "Category is required.",
+      })
+      .min(1, {
+        message: "Category is required.",
+      }),
+  }),
   paymentInstrument: z
     .string({
       required_error: "Payment Instrument is required.",

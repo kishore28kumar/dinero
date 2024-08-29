@@ -25,11 +25,14 @@
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.0",
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@tanstack/react-table": "^8.19.3",
+    "axios": "^1.7.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "firebase": "^10.12.4",
     "firebaseui": "^6.1.0",
@@ -50,6 +53,7 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
+    "vaul": "^0.9.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

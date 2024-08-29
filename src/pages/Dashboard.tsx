@@ -1,27 +1,38 @@
-import { useSigninCheck } from "reactfire";
+import { useFunctions, useSigninCheck } from "reactfire";
 import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { httpsCallable } from "firebase/functions";
+import { toast } from "sonner";
 
 export function Dashboard() {
   const { status, data: signInCheckResult } = useSigninCheck();
+  const functions = useFunctions();
 
   if (status === "loading") {
     return <span>loading...</span>;
   }
 
+  function callTest(): void {
+    httpsCallable(functions, "test")();
+  }
+
   if (signInCheckResult.signedIn === true) {
     return (
       <>
-        <h1 className="text-lg font-semibold md:text-2xl p-4">
-          Welcome Back, {signInCheckResult.user.displayName}!
-        </h1>
+        <div className="flex align-middle p-4">
+          <h1 className="text-lg font-semibold md:text-2xl">
+            Welcome Back, {signInCheckResult.user.displayName}!
+          </h1>
+          <Button className="ml-5" onClick={() => callTest()}>
+            Button
+          </Button>
+        </div>
         <main className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 p-4">
           {/* <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"></div> */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Net Worth
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Net Worth</CardTitle>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

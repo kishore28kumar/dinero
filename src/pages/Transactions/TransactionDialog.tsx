@@ -40,6 +40,7 @@ import {
 } from "../../models/Transaction.model";
 import { DialogProps } from "../../models/DialogProps.model";
 import { TransactionFormSchema } from "./TransactionFormSchema";
+import { CategoryCombobox } from "@pages/Transactions/CategoryCombobox";
 
 export function TransactionDialog({ open, setOpen, onSave }: DialogProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +56,7 @@ export function TransactionDialog({ open, setOpen, onSave }: DialogProps) {
       accountingEntryType: "Credit",
       transactionAmount: 0,
       accountType: "Expense",
-      category: "",
+      category: { categoryId: "", categoryName: "" },
       paymentInstrument: "",
     },
   });
@@ -63,7 +64,7 @@ export function TransactionDialog({ open, setOpen, onSave }: DialogProps) {
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof TransactionFormSchema>) {
     console.log(JSON.stringify(values, null, 2));
-    let transaction: Transaction = new Transaction(
+    const transaction: Transaction = new Transaction(
       "",
       data!.uid,
       values.transactionDate.toISOString(),
@@ -239,7 +240,8 @@ export function TransactionDialog({ open, setOpen, onSave }: DialogProps) {
                     <FormItem>
                       <FormLabel>Category</FormLabel>
                       <FormControl>
-                        <Input placeholder="Category" {...field} />
+                        {/* <Input placeholder="Category" {...field} /> */}
+                        <CategoryCombobox form={form} value={field.value} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -9,7 +9,6 @@
   "todo-tree.highlights.customHighlight": {
     "TODO": {
       "icon": "check",
-      "type": "line",
       "iconColour": "yellow",
       "foreground": "red",
       "background": "yellow"

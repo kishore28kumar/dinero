@@ -5,6 +5,10 @@ export const CategoryConverter = {
     toFirestore: (category: Category) => { return { categoryName: category.categoryName } },
     fromFirestore: (snapshot: QueryDocumentSnapshot, options: any) => {
         const data = snapshot.data(options);
-        return new Category(snapshot.id, data.categoryName);
+        const category: Category = {
+            categoryId: snapshot.id,
+            categoryName: data.categoryName
+        };
+        return category;
     }
 };

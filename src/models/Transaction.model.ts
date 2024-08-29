@@ -1,8 +1,9 @@
+import { Category } from "@models/Category.model";
 import moment from "moment";
 
 export class Transaction {
     constructor(transactionId: string, userUid: string, transactionDate: string, description: string, accountingEntryType: string, 
-        transactionAmount: number, accountType: string, category: string, paymentInstrument: string
+        transactionAmount: number, accountType: string, category: Category, paymentInstrument: string
     ) {
         this.transactionId = transactionId;
         this.userUid = userUid;
@@ -34,7 +35,7 @@ export class Transaction {
     transactionAmount: number;
     signedAmount: number;
     accountType: string;
-    category: string;
+    category: Category;
     paymentInstrument: string;
     createdBy: string;
     createdDate: string;

@@ -8,3 +8,5 @@ export { PaymentInstruments } from "@pages/PaymentInstruments/PaymentInstruments
 export { Categories } from "@pages/Categories/Categories";
 export { NotFoundPage } from "@pages/NotFoundPage";
 export { UserNotApprovedPage } from "@pages/UserNotApprovedPage";
+export { UsersPage } from "@pages/Users/UsersPage";
+export { AccessDeniedPage } from "@pages/AccessDeniedPage";

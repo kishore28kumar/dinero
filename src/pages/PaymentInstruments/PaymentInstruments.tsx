@@ -86,7 +86,7 @@ export function PaymentInstruments() {
         </ErrorBoundary>
       </div>
       {/* <div className="py-5 grid gap-5"> */}
-        <div className="py-5 flex gap-5">
+      <div className="py-5 flex gap-5 flex-wrap items-start">
         {isLoading ? (
           <span>Loading...</span>
         ) : (

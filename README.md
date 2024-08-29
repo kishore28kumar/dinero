@@ -20,6 +20,7 @@ Dinero is a personal finance management tool.
 - [daisyUI](https://daisyui.com/)
 - [awesome-shadcn-ui](https://github.com/birobirobiro/awesome-shadcn-ui)
 - [Flowbite](https://flowbite.com/docs/getting-started/react/)
+- [Stepperize](https://stepperize.vercel.app/)
 
 # Local Setup
 

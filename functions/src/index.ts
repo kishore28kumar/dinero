@@ -1,118 +1,166 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-import { onRequest } from "firebase-functions/v2/https";
+import { HttpsError, onCall } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { initializeApp } from "firebase-admin/app";
-import { FirebaseAuthError, UserRecord, getAuth } from "firebase-admin/auth";
-import express, { Application, NextFunction, Request, Response } from "express";
+import { getAuth, UserRecord } from "firebase-admin/auth";
+import { AuthData } from "firebase-functions/lib/common/providers/https";
+import { createCipheriv, createDecipheriv, generateKeyPairSync, privateDecrypt, publicEncrypt, randomBytes, RsaPublicKey } from "crypto";
+import { RSA_PKCS1_OAEP_PADDING } from "constants";
 
-const app: Application = express();
 initializeApp();
 const auth = getAuth();
-
-const RequireAdmin = async (request: Request, response: Response, next: NextFunction) => {
-    try {
-        const idToken: string = request.headers.authorization?.split('Bearer ')[1] as string;
-        const decodedToken = await auth.verifyIdToken(idToken, true);
-        if (decodedToken.role === 'admin') {
-            logger.log('Admin request allowed.');
-            response.locals.decodedToken = decodedToken;
-            next();
-        } else {
-            logger.error('Admin request denied.');
-            response.status(401).send({
-                "message": "Unauthorized!"
-            });
-        }
-    } catch (error) {
-        logger.error(`Error: ${error}`);
-        response.status(401).send({
-            "message": "Unauthorized!"
-        });
-    }
-}
-app.use(RequireAdmin);
-
 const customClaims = { approved: true, role: "user" };
 
-app.get('/approve', async (request: Request, response: Response) => {
+function validateAuth(auth: AuthData | undefined) {
 
-    // Get UID from query params
-    const uid: string = request.query["uid"] as string;
-    logger.info(`Admin approval for new user: ${uid}`);
-
-    const decodedToken = response.locals.decodedToken;
-    if (decodedToken.uid = uid) {
-        response.status(400).send({
-            "message": "User can't approve himself."
-        });
-        return;
+    // Checking that the user is authenticated.
+    if (!auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new HttpsError("failed-precondition", "The function must be " +
+            "called while authenticated.");
     }
 
+    if (auth!.token.role !== "admin") {
+        throw new HttpsError("failed-precondition", "Only admin is allowed to perform this action.");
+    }
+}
+
+exports.approveUser = onCall({ cors: ["https://dinero-62808.web.app/"] }, async (request) => {
+
+    validateAuth(request.auth);
+
+    // Message text passed from the client.
+    const newUserUid = request.data.uid;
+    // Checking attribute.
+    if (!(typeof newUserUid === "string") || newUserUid.length === 0) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new HttpsError("invalid-argument", "The function must be called " +
+            "with one arguments \"uid\" containing the new user's UID.");
+    }
+
+    logger.info(`Admin approval for new user: ${newUserUid}`);
+
     // Get User record
-    auth
-        .getUser(uid)
-        .then((userRecord) => {
-            logger.log(`Successfully fetched user data: ${userRecord.uid}`);
+    let userRecord = await auth.getUser(newUserUid);
+    logger.log(`Successfully fetched user data: ${userRecord.uid}`);
 
-            if (!userRecord.customClaims!.approved) {
-                // Set Custom Claims
-                auth.setCustomUserClaims(uid, customClaims).then(() => response.send({
-                    "message": `Approved ${userRecord.displayName}!`
-                }));
-            } else {
-                response.status(400).send({
-                    "message": "User is already approved."
-                });
-            }
-        })
-        .catch((error: FirebaseAuthError) => {
-            logger.error(`Error fetching user data: ${error}`);
-            response.status(400).send({
-                "message": "Error fetching user data."
-            });
-        });
+    if (!userRecord.customClaims!.approved) {
+        // Set Custom Claims
+        await auth.setCustomUserClaims(userRecord.uid, customClaims);
+        return {
+            "message": `Approved ${userRecord.displayName}!`
+        }
+    } else {
+        logger.log(`User ${userRecord.displayName} is already approved.`);
+        return {
+            "message": "User is already approved."
+        }
+    }
 });
 
-app.get('/', async (request: Request, response: Response) => {
+exports.getAllUsers = onCall(async (request) => {
 
-    // Get Next Page Token
-    const nextPageToken: string = request.query["nextPageToken"] as string;
+    // Validate Auth
+    validateAuth(request.auth);
 
-    getAuth()
-        .listUsers(10, nextPageToken)
-        .then((listUsersResult) => {
-            let users: any[] = [];
-            listUsersResult.users.forEach((userRecord: UserRecord) => {
-                users.push({
-                    "uid": userRecord.uid,
-                    "email": userRecord.email,
-                    "emailVerified": userRecord.emailVerified,
-                    "displayName": userRecord.displayName,
-                    "disabled": userRecord.disabled,
-                    "role": userRecord.customClaims!.role,
-                    "approved": userRecord.customClaims!.approved ? userRecord.customClaims!.approved : false
-                });
-            });
-            response.status(200).send({
-                "data": users,
-                "nextPageToken": listUsersResult.pageToken
-            });
-        })
-        .catch((error) => {
-            logger.log('Error listing users:', error);
-            response.status(400).send({
-                "message": "Error listing users."
-            });
+    const nextPageToken = request.data.nextPageToken;
+    let listUsersResult;
+    if (nextPageToken != undefined && nextPageToken != null) {
+        listUsersResult = await getAuth().listUsers(10, nextPageToken);
+    } else {
+        listUsersResult = await getAuth().listUsers(10);
+    }
+
+    let users: any[] = [];
+    listUsersResult.users.forEach((userRecord: UserRecord) => {
+        users.push({
+            "uid": userRecord.uid,
+            "email": userRecord.email,
+            "emailVerified": userRecord.emailVerified,
+            "displayName": userRecord.displayName,
+            "disabled": userRecord.disabled,
+            "role": userRecord.customClaims!.role,
+            "approved": userRecord.customClaims!.approved ? userRecord.customClaims!.approved : false
         });
+    });
+    return {
+        "data": users,
+        "nextPageToken": listUsersResult.pageToken
+    }
 });
 
-export const user = onRequest(app);
-// https://github.com/firebase/functions-samples/blob/main/Node-1st-gen/authorized-https-endpoint/functions/index.js
+function encrypt(data: string, publicKey: string) {
+    const encryptedData = publicEncrypt(
+        {
+            key: publicKey,
+            padding: RSA_PKCS1_OAEP_PADDING,
+            oaepHash: 'sha256',
+        },
+        Buffer.from(data)
+    );
+    return encryptedData.toString('base64');
+}
+
+function decrypt(encryptedData: string, privateKey: string) {
+    const buffer = Buffer.from(encryptedData, 'base64');
+    const decryptedData = privateDecrypt(
+        {
+            key: privateKey,
+            padding: RSA_PKCS1_OAEP_PADDING,
+            oaepHash: 'sha256',
+        },
+        buffer
+    );
+    return decryptedData.toString();
+}
+
+function generateRandomBytes(length) {
+    return randomBytes(length);
+}
+
+function encryptAES(text, key, iv) {
+    const cipher = createCipheriv('aes-256-cbc', key, iv);
+    let encryptedData = cipher.update(text, 'utf8', 'base64');
+    encryptedData += cipher.final('base64');
+    return encryptedData;
+}
+
+function decryptAES(encryptedData, key, iv) {
+    const decipher = createDecipheriv('aes-256-cbc', key, iv);
+    let decryptedData = decipher.update(encryptedData,
+        'base64', 'utf8');
+    decryptedData += decipher.final('utf8');
+    return decryptedData;
+}
+
+exports.test = onCall(async (request) => {
+    const { privateKey, publicKey } = generateKeyPairSync('rsa', {
+        modulusLength: 2048,
+        publicKeyEncoding: {
+            type: 'spki',
+            format: 'pem'
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8',
+            format: 'pem'
+        }
+    });
+
+    logger.info(`publicKey: ${publicKey}`);
+    logger.info(`privateKey: ${privateKey}`);
+
+    // Example usage
+    const data = '1000';
+
+    const encrypted = encrypt(data, publicKey);
+    console.log('Encrypted data:', encrypted);
+
+    const decrypted = decrypt(encrypted, privateKey);
+    console.log('Decrypted data:', decrypted);
+
+    // Example usage:
+    const key = generateRandomBytes(32); // 256-bit key
+    const iv = generateRandomBytes(16); // 128-bit IV
+    const text = '1,00,00,000';
+    console.log('Encrypted:', encryptAES(text, key, iv));
+    console.log('Decrypted:', decryptAES(encryptAES(text, key, iv), key, iv));
+});
